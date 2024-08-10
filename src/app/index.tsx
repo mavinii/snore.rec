@@ -1,12 +1,16 @@
 import { View, Text, Image } from 'react-native';
-import { Circle, Mic } from 'lucide-react-native';
+import { Circle, Mic, MoveRight } from 'lucide-react-native';
 
 import { colors } from '@/styles/colors';
 import { Button } from '@/components/button';
 import { useState } from 'react';
+import { Modal } from '@/components/modal';
+import Loading from '@/components/loading';
 
  export default function Index() {
    const [startRecording, setStartRecording] = useState(false);
+   const [isLoading, setIsLoading] = useState(false);
+   const [showModal, setShowModal] = useState(false);
 
    function hundleStartRecordingAudio() {
       setStartRecording(true);
@@ -14,6 +18,27 @@ import { useState } from 'react';
 
    function handleStopRecordingAudio() {
       setStartRecording(false);
+      setIsLoading(true); // Show the loading indicator
+
+      setTimeout(() => {
+         setIsLoading(false); // Hide the loading indicator
+         setShowModal(true); // Show the modal after loading
+      }, 3000);
+   }
+
+   // function handleStopRecordingAudio() {
+   //    setStartRecording(false);
+
+   //    setTimeout(() => {
+   //       <Loading />
+   //    }, 3000);
+
+   //    // Then show Modal
+   //    setShowModal(true);
+   // }
+
+   function handleCloseModal() {
+      setShowModal(false);
    }
 
     return (
@@ -64,7 +89,40 @@ import { useState } from 'react';
             By using this app, you agree to our{"\n"}
             <Text className='text-zinc-300 underline'>Terms of Service</Text> and {""}
             <Text className='text-zinc-300 underline'>Privacy Policy</Text>.
-         </Text> 
+         </Text>
+
+         {isLoading && <Loading />}
+         <Modal
+            title='Audio Recorded' 
+            subtitle='Know more about the recording you made last night.'
+            visible={showModal}
+            onClose={handleCloseModal}
+            >
+
+            <View className='my-2 flex-wrap border-b border-zinc-800 items-start' />
+
+            <View className='gap-4 mt-5'>
+               <Text className='text-zinc-400 font-regular text-sm'>Date</Text>
+               <Text className='text-white font-medium text-sm'>April 15, 2022</Text>
+
+               <Text className='text-zinc-400 font-regular text-sm'>Duration</Text>
+               <Text className='text-white font-medium text-sm'>8 hours and 30 minutes</Text>
+
+               <Text className='text-zinc-400 font-regular text-sm'>Quality</Text>
+               <Text className='text-white font-medium text-sm'>Good</Text>
+
+               <Text className='text-zinc-400 font-regular text-sm'>Transcription</Text>
+               <Text className='text-white font-medium text-sm'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec at nunc ac odio.</Text>
+               
+               <View className='my-2 flex-wrap border-b border-zinc-800 items-start' />
+
+               <Button variant='secondary'>
+                  <Button.Title>SAVE</Button.Title>
+                  <MoveRight color={colors.zinc[200]} size={18} />
+               </Button>
+            </View>
+         </Modal>
+
       </View>
     );
  }
