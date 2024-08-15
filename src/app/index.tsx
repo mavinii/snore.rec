@@ -1,5 +1,5 @@
-import { View, Text, Image, ScrollView } from 'react-native';
-import { Mic, MoveRight, Scroll } from 'lucide-react-native';
+import { View, Text, Image } from 'react-native';
+import { Mic, MoveRight } from 'lucide-react-native';
 import { Audio } from 'expo-av';
 
 import { colors } from '@/styles/colors';
