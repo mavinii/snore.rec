@@ -29,8 +29,8 @@ function Button({
             className={clsx(
                 "w-full h-11 flex-row items-center justify-center rounded-lg gap-2",
                     {
-                        "bg-red-700": variant === 'primary',
-                        "bg-zinc-800": variant === 'secondary',
+                        "bg-zinc-800": variant === 'primary',
+                        "bg-zinc-200": variant === 'secondary',
                     }                
                 )}
                     activeOpacity={0.8}
@@ -50,8 +50,8 @@ function Title({ children }: TextProps) {
     return (
         <Text
             className={clsx("text-base font-semibold", {
-                "text-lime-950": variant === 'primary',
-                "text-zinc-200": variant === 'secondary',
+                "text-zinc-300": variant === 'primary',
+                "text-zinc-800": variant === 'secondary',
             })}
             >{children}
         </Text>
