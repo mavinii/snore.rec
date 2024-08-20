@@ -1,16 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Pause, Play } from 'lucide-react-native';
-import { View, Button, TouchableOpacity, Text } from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
 import { Audio, AVPlaybackStatus } from 'expo-av';
 import { Sound } from 'expo-av/build/Audio';
+import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 const MemosListItem = ({ uri }: { uri: string }) => {
     const [sound, setSound] = useState<Sound>();
     const [status, setStatus] = useState<AVPlaybackStatus>()
-    
+
     async function loadSound() {
         console.log('Loading Sound');
-        const { sound } = await Audio.Sound.createAsync({ uri }, undefined, onPlayBackStatusUpdate);
+        const { sound } = await Audio.Sound.createAsync(
+            { uri }, 
+            { progressUpdateIntervalMillis: 1000 / 60 }, 
+            onPlayBackStatusUpdate
+        );
         setSound(sound);
     }
 
@@ -18,6 +23,7 @@ const MemosListItem = ({ uri }: { uri: string }) => {
     useEffect(() => {
         loadSound();
         return () => {
+
         // Cleanup the sound on component unmount
         sound?.unloadAsync();
         };
@@ -78,6 +84,11 @@ const MemosListItem = ({ uri }: { uri: string }) => {
         return `${hours ? hours + ':' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     };
 
+    // Dynamically update the left position of the indicator
+    const animatedIndicatorStyle = useAnimatedStyle(() => ({
+        left: `${progress * 100}%`,
+    }));
+
     return (
         <View className='h-20 bg-zinc-200 px-4 rounded-xl flex flex-row items-center gap-3 border border-zinc-50'>
             <TouchableOpacity
@@ -93,13 +104,13 @@ const MemosListItem = ({ uri }: { uri: string }) => {
     
             <View className='flex-1'>
                 <View className='flex flex-row h-1 bg-neutral-300 rounded-sm items-center'>
-                    <View
+                    <Animated.View
                         className='w-3 aspect-square bg-[royalblue] rounded-full absolute'
-                        style={{ left: `${progress * 100}%` }} // Dynamically update the left position
+                        style={animatedIndicatorStyle}
                     />
                 </View>
             </View>
-            <Text className='ml-1 color-neutral-500'>
+            <Text className='ml-1 color-neutral-500 text-sm'>
                 {convertToTime(position ?? 0)} / {convertToTime(duration ?? 0)}
             </Text>
         </View>
